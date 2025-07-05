@@ -1,0 +1,16 @@
+{
+    "apple": {
+        "reminders": [
+            { "interval": "1 month", "message": "Time to check for pests." },
+            { "interval": "2 months", "message": "Apply fertilizer." },
+            { "interval": "3 months", "message": "Inspect fruit growth." }
+        ]
+    },
+    "banana": {
+        "reminders": [
+            { "interval": "1 month", "message": "Check for leaf spots." },
+            { "interval": "2 months", "message": "Apply compost." },
+            { "interval": "3 months", "message": "Check for pests and diseases." }
+        ]
+    }
+}

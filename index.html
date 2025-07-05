@@ -1,0 +1,74 @@
+<?php
+session_start();
+include 'db.php'; // Include your database connection
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: userlogin.php"); // Redirect if user is not logged in
+    exit();
+}
+
+$userId = $_SESSION['user_id'];
+$sql = "SELECT crop_name, MIN(reminder_date) as next_reminder_date
+        FROM Crops 
+        JOIN Reminders ON Crops.crop_id = Reminders.crop_id
+        WHERE Crops.user_id = '$userId' AND Reminders.reminder_date >= CURDATE()
+        GROUP BY Crops.crop_id, crop_name
+        ORDER BY next_reminder_date ASC";
+$result = $conn->query($sql);
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .navbar { background-color: #333; overflow: hidden; }
+        .navbar a, .navbar .dropdown { float: left; display: block; color: white; text-align: center; padding: 14px 20px; text-decoration: none; }
+        .navbar a:hover, .dropdown:hover .dropbtn { background-color: #ddd; color: black; }
+        .dropdown { float: right; overflow: hidden; }
+        .dropdown .dropbtn { cursor: pointer; font-size: 16px; border: none; outline: none; color: white; padding: 14px 20px; background-color: inherit; }
+        .dropdown-content { display: none; position: absolute; right: 0; background-color: #f9f9f9; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; }
+        .dropdown-content a { float: none; color: black; padding: 12px 16px; text-decoration: none; display: block; text-align: left; }
+        .dropdown-content a:hover { background-color: #ddd; }
+        .dropdown:hover .dropdown-content { display: block; }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .reminder { margin-bottom: 10px; padding: 10px; background-color: #fff; border: 1px solid #ccc; border-radius: 5px; }
+        .reminder h3 { margin-top: 0; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.php">Home</a>
+        <div class="dropdown" style="float:right;">
+            <button class="dropbtn">User</button>
+            <div class="dropdown-content">
+                <a href="profile.php">Profile</a>
+                <a href="reminders.php">My Reminders</a>
+                <a href="logout.php">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Upcoming Reminders</h2>
+        <?php if ($result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <div class="reminder">
+                    <h3>Crop: <?php echo $row['crop_name']; ?></h3>
+                    <p>Next Reminder Date: <?php echo $row['next_reminder_date']; ?></p>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p>No upcoming reminders found.</p>
+        <?php endif; ?>
+    </div>
+</body>
+</html>
+
+<?php
+$conn->close(); // Close the database connection
+?>
