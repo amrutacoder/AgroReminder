@@ -2,7 +2,6 @@
 
 The **Agro Reminders System** is a simple and user-friendly web application designed to help farmers manage their crop-related tasks efficiently. It allows users to set reminders for important activities like planting, watering, fertilizing, and harvesting. This system ensures timely action, improves crop management, and supports better productivity.
 
----
 
 ## 🚀 Features
 
